@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gate 1 - Guest Entry</title>
+  <title>Guest Entry - Gate 1</title>
   <style>
     body {
       background-color: #f4fff4;
@@ -14,28 +14,23 @@
     }
     h1 {
       color: green;
-      font-size: 40px;
     }
-    img {
-      margin-top: 20px;
+    .qr-section img {
       width: 300px;
-      border: 8px solid green;
-      border-radius: 20px;
-    }
-    p {
-      font-size: 22px;
-      color: green;
       margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to Founder’s Day</h1>
-  <p>Scan this QR Code to enter</p>
+  <h1>Welcome Guest</h1>
+  <p>Scan this QR Code for entry</p>
 
-  <!-- This QR code links to capture.html -->
-  <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://riditjaipuria.github.io/FINALE/capture.html&size=300x300" alt="QR Code">
+  <!-- ✅ QR points to the capture page in your new repo -->
+  <div class="qr-section">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://riditjaipuria.github.io/qr/capture.html&size=300x300" alt="QR Code">
+  </div>
 
-  <p>Gate 1 - QR Entry System</p>
+  <p style="margin-top:20px; color:green;">Gate 1 - Founder’s Day</p>
 </body>
 </html>
+
