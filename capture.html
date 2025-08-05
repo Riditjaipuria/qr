@@ -3,100 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gate 1 - Permission Granted</title>
+  <title>Permission Granted - Gate 1</title>
   <style>
     body {
-      background-color: white;
+      background-color: #f4fff4;
       text-align: center;
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
     .tick {
       font-size: 100px;
       color: green;
-      margin-top: 50px;
+      margin-top: 40px;
     }
     .message {
-      font-size: 30px;
+      font-size: 28px;
+      margin-top: 20px;
       color: green;
-      margin-top: 10px;
     }
     .time {
       font-size: 20px;
       margin-top: 10px;
     }
-    video {
-      border: 5px solid green;
+    #video, #canvas {
+      border: 5px solid #28a745;
       border-radius: 15px;
-      margin-top: 20px;
+      margin-top: 15px;
     }
     #captureBtn {
-      margin-top: 20px;
-      padding: 15px;
+      margin-top: 15px;
+      font-size: 20px;
+      padding: 12px;
       border-radius: 50%;
       border: none;
-      background-color: green;
+      background-color: #28a745;
       color: white;
-      font-size: 24px;
       cursor: pointer;
     }
   </style>
 </head>
-<body>
+<body onload="showTime()">
 
-<div id="permissionScreen">
   <div class="tick">✅</div>
   <div class="message">Permission Granted</div>
   <div class="time" id="timeDisplay"></div>
   <div class="message">Welcome to Founder’s Day</div>
-</div>
 
-<div id="photoScreen" style="display:none;">
-  <h2>Please stand in the middle</h2>
+  <h2 style="font-size:26px; font-weight:bold; margin-top:30px;">Please stand in the middle</h2>
   <video id="video" width="320" height="240" autoplay></video><br>
-  <button id="captureBtn">📸</button>
+  <button id="captureBtn">📸</button><br>
   <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-</div>
 
 <script>
-  // Show current date and time
-  const now = new Date();
-  document.getElementById("timeDisplay").innerText = "Time: " + now.toLocaleString();
-
-  // Switch to camera after 3 seconds
-  setTimeout(() => {
-    document.getElementById("permissionScreen").style.display = "none";
-    document.getElementById("photoScreen").style.display = "block";
-    startCamera();
-    autoReturn();
-  }, 3000);
-
-  // Start the camera
-  function startCamera() {
-    const video = document.getElementById('video');
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        video.srcObject = stream;
-      });
+  function showTime() {
+    const now = new Date();
+    document.getElementById("timeDisplay").innerText = "Time: " + now.toLocaleString();
   }
 
-  // Capture photo silently
+  // Start camera
+  const video = document.getElementById('video');
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then((stream) => {
+      video.srcObject = stream;
+    });
+
+  // Capture photo
   document.getElementById('captureBtn').onclick = () => {
-    const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    // Photo is captured in canvas but not shown
+    canvas.style.display = "block";
   };
 
-  // Auto-return to QR page after 10 seconds
-  function autoReturn() {
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 10000);
-  }
+  // Auto return to QR page in 10 sec
+  setTimeout(() => {
+    window.location.href = "https://riditjaipuria.github.io/qr/index.html";
+  }, 10000);
 </script>
 
 </body>
 </html>
+
