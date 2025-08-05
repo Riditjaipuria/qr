@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gate 1 - Permission Granted</title>
+  <style>
+    body {
+      background-color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .tick {
+      font-size: 100px;
+      color: green;
+      margin-top: 50px;
+    }
+    .message {
+      font-size: 30px;
+      color: green;
+      margin-top: 10px;
+    }
+    .time {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+    video {
+      border: 5px solid green;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+    #captureBtn {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 50%;
+      border: none;
+      background-color: green;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="permissionScreen">
+  <div class="tick">✅</div>
+  <div class="message">Permission Granted</div>
+  <div class="time" id="timeDisplay"></div>
+  <div class="message">Welcome to Founder’s Day</div>
+</div>
+
+<div id="photoScreen" style="display:none;">
+  <h2>Please stand in the middle</h2>
+  <video id="video" width="320" height="240" autoplay></video><br>
+  <button id="captureBtn">📸</button>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+</div>
+
+<script>
+  // Show current date and time
+  const now = new Date();
+  document.getElementById("timeDisplay").innerText = "Time: " + now.toLocaleString();
+
+  // Switch to camera after 3 seconds
+  setTimeout(() => {
+    document.getElementById("permissionScreen").style.display = "none";
+    document.getElementById("photoScreen").style.display = "block";
+    startCamera();
+    autoReturn();
+  }, 3000);
+
+  // Start the camera
+  function startCamera() {
+    const video = document.getElementById('video');
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      });
+  }
+
+  // Capture photo silently
+  document.getElementById('captureBtn').onclick = () => {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Photo is captured in canvas but not shown
+  };
+
+  // Auto-return to QR page after 10 seconds
+  function autoReturn() {
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 10000);
+  }
+</script>
+
+</body>
+</html>
