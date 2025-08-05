@@ -26,13 +26,13 @@
       font-size: 20px;
       margin-top: 10px;
     }
-    #video, #canvas {
+    #video {
       border: 5px solid #28a745;
       border-radius: 15px;
-      margin-top: 15px;
+      margin-top: 25px;
     }
     #captureBtn {
-      margin-top: 15px;
+      margin-top: 20px;
       font-size: 20px;
       padding: 12px;
       border-radius: 50%;
@@ -45,15 +45,16 @@
 </head>
 <body onload="showTime()">
 
+  <!-- ✅ Permission Granted Screen -->
   <div class="tick">✅</div>
   <div class="message">Permission Granted</div>
   <div class="time" id="timeDisplay"></div>
   <div class="message">Welcome to Founder’s Day</div>
 
+  <!-- 📸 Camera -->
   <h2 style="font-size:26px; font-weight:bold; margin-top:30px;">Please stand in the middle</h2>
   <video id="video" width="320" height="240" autoplay></video><br>
-  <button id="captureBtn">📸</button><br>
-  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+  <button id="captureBtn">📸</button>
 
 <script>
   function showTime() {
@@ -68,15 +69,22 @@
       video.srcObject = stream;
     });
 
-  // Capture photo
+  // Capture photo (hidden save for future use)
   document.getElementById('captureBtn').onclick = () => {
-    const canvas = document.getElementById('canvas');
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 240;
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    canvas.style.display = "block";
+
+    // Convert to image for backend if needed
+    const photoData = canvas.toDataURL("image/png");
+    console.log("Photo captured:", photoData.substring(0,50) + "...");
+
+    // ✅ We don’t display the photo on screen again
   };
 
-  // Auto return to QR page in 10 sec
+  // Auto return to QR page after 10 seconds
   setTimeout(() => {
     window.location.href = "https://riditjaipuria.github.io/qr/index.html";
   }, 10000);
@@ -84,4 +92,3 @@
 
 </body>
 </html>
-
