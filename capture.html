@@ -92,3 +92,15 @@
 
 </body>
 </html>
+fetch("https://script.google.com/macros/s/AKfycbzC3h1-2BbQTjc7BUnYFKBNd50SGXfdkdvJcF7gAlZhQkkbzLmTd_Du7K8XbJvU0ZReJw/exec", {
+  method: "POST",
+  body: JSON.stringify({
+    gate: "Gate 1",
+    guestId: "GUEST-" + Date.now(),
+    photo: photoData
+  }),
+  headers: { "Content-Type": "application/json" }
+})
+.then(res => res.text())
+.then(txt => console.log("Server Response:", txt));
+
