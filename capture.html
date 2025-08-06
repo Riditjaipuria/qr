@@ -1,38 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Permission Granted - Gate 1</title>
+  <title>Guest Entry - Capture</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       background-color: #f4fff4;
       text-align: center;
-      font-family: Arial, sans-serif;
-      margin: 0;
       padding: 20px;
     }
     .tick {
       font-size: 100px;
       color: green;
-      margin-top: 40px;
     }
     .message {
-      font-size: 28px;
-      margin-top: 20px;
+      font-size: 30px;
+      margin-top: 10px;
       color: green;
     }
     .time {
-      font-size: 20px;
+      font-size: 22px;
       margin-top: 10px;
     }
-    #video {
+    #video, #canvas {
       border: 5px solid #28a745;
       border-radius: 15px;
-      margin-top: 25px;
+      margin-top: 15px;
     }
     #captureBtn {
-      margin-top: 20px;
+      margin-top: 15px;
       font-size: 20px;
       padding: 12px;
       border-radius: 50%;
@@ -43,64 +39,69 @@
     }
   </style>
 </head>
-<body onload="showTime()">
+<body>
 
-  <!-- ✅ Permission Granted Screen -->
+<div id="permissionScreen">
   <div class="tick">✅</div>
   <div class="message">Permission Granted</div>
   <div class="time" id="timeDisplay"></div>
   <div class="message">Welcome to Founder’s Day</div>
+</div>
 
-  <!-- 📸 Camera -->
-  <h2 style="font-size:26px; font-weight:bold; margin-top:30px;">Please stand in the middle</h2>
+<div id="photoScreen" style="display:none;">
+  <h2 style="font-size:26px; font-weight:bold;">Please stand in the middle</h2>
   <video id="video" width="320" height="240" autoplay></video><br>
-  <button id="captureBtn">📸</button>
+  <button id="captureBtn">📸</button><br>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+</div>
 
 <script>
-  function showTime() {
-    const now = new Date();
-    document.getElementById("timeDisplay").innerText = "Time: " + now.toLocaleString();
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwHInUlsozTq1DcdglAu-2-pkSpTzZiOSWE9M08BnCFLDML4KgzPlKdBPUrBQKY3Lj-/exec";
+
+  // Show current time
+  document.getElementById("timeDisplay").innerText = "Time: " + new Date().toLocaleString();
+
+  // After 3 seconds, show camera
+  setTimeout(() => {
+    document.getElementById("permissionScreen").style.display = "none";
+    document.getElementById("photoScreen").style.display = "block";
+    startCamera();
+  }, 3000);
+
+  function startCamera() {
+    const video = document.getElementById('video');
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => { video.srcObject = stream; });
   }
 
-  // Start camera
-  const video = document.getElementById('video');
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then((stream) => {
-      video.srcObject = stream;
-    });
-
-  // Capture photo (hidden save for future use)
   document.getElementById('captureBtn').onclick = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 320;
-    canvas.height = 240;
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Convert to image for backend if needed
     const photoData = canvas.toDataURL("image/png");
-    console.log("Photo captured:", photoData.substring(0,50) + "...");
 
-    // ✅ We don’t display the photo on screen again
+    // Send data to Google Sheet
+    fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify({
+        gate: "Gate 1",
+        guestId: "GUEST-" + Date.now(),
+        photo: photoData
+      }),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => res.text())
+    .then(txt => console.log("Server Response:", txt));
+
+    // Reset to Permission Granted page after 10 sec
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
   };
-
-  // Auto return to QR page after 10 seconds
-  setTimeout(() => {
-    window.location.href = "https://riditjaipuria.github.io/qr/index.html";
-  }, 10000);
 </script>
 
 </body>
 </html>
-fetch("https://script.google.com/macros/s/AKfycbzC3h1-2BbQTjc7BUnYFKBNd50SGXfdkdvJcF7gAlZhQkkbzLmTd_Du7K8XbJvU0ZReJw/exec", {
-  method: "POST",
-  body: JSON.stringify({
-    gate: "Gate 1",
-    guestId: "GUEST-" + Date.now(),
-    photo: photoData
-  }),
-  headers: { "Content-Type": "application/json" }
-})
-.then(res => res.text())
-.then(txt => console.log("Server Response:", txt));
 
