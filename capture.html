@@ -1,71 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guest Entry - Capture</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f9f9f9;
-      margin: 0;
-    }
-    .container {
-      text-align: center;
-      background-color: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-      max-width: 450px;
-      width: 90%;
-    }
-    .logo {
-      font-size: 42px;
-      font-weight: bold;
-      color: #34495e;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-    .tick {
-      font-size: 80px;
-      color: #27ae60;
-      margin-bottom: 15px;
-    }
-    .message {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .time {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #7f8c8d;
-    }
-    input[type="text"] {
-      width: 80%;
-      padding: 10px;
-      font-size: 18px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      border: 1px solid #bdc3c7;
-    }
-    #captureBtn {
-      padding: 12px 25px;
-      font-size: 20px;
-      border: none;
-      border-radius: 10px;
-      background-color: #2980b9;
-      color: white;
-      cursor: pointer;
-    }
-    #captureBtn:hover {
-      background-color: #1c5980;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guest Entry - Capture</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    margin: 0;
+  }
+  .container {
+    text-align: center;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    max-width: 450px;
+    width: 90%;
+  }
+  .logo {
+    font-size: 42px;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+  .tick {
+    font-size: 80px;
+    color: #27ae60;
+    margin-bottom: 15px;
+  }
+  .message {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .time {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #7f8c8d;
+  }
+  input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #bdc3c7;
+  }
+  #captureBtn {
+    padding: 12px 25px;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #2980b9;
+    color: white;
+    cursor: pointer;
+  }
+  #captureBtn:hover {
+    background-color: #1c5980;
+  }
+</style>
 </head>
 <body>
 
@@ -76,17 +76,14 @@
   <div class="time" id="timeDisplay"></div>
   <div class="message">Welcome to Founder’s Day</div>
 
-  <!-- Name input field -->
   <input type="text" id="guestName" placeholder="Enter Guest Name">
-
   <button id="captureBtn">Record Entry</button>
 </div>
 
 <script>
-  // Your deployed Google Apps Script URL
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwYfE3P3OO7KaAveRtKttWsD_jogxEF7PWPdUfTlPLPpvy6Y0fSeQiEq-RmkmUqknpsBw/exec";
+  // Replace this with your Web App URL
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxdeAVc0IbLyLD_keSHENkGcuQzqJ8woSKLHruyPRUqR1KwckfV6_BwkoBY_TrwqTyjFg/exec";
 
-  // Show current time
   const timeEl = document.getElementById("timeDisplay");
   function updateTime() { 
     timeEl.innerText = "Time: " + new Date().toLocaleString(); 
@@ -94,7 +91,6 @@
   updateTime();
   setInterval(updateTime, 1000);
 
-  // Capture guest entry
   document.getElementById('captureBtn').onclick = () => {
     const guestName = document.getElementById('guestName').value || "Anonymous";
     const guestId = "GUEST-" + Date.now();
@@ -104,19 +100,20 @@
       body: JSON.stringify({ gate: "Gate 1", guestId: guestId, name: guestName }),
       headers: { "Content-Type": "application/json" }
     })
-    .then(res => res.text())
-    .then(txt => {
-      console.log("Server Response:", txt);
-      alert("Entry Recorded!");
-      document.getElementById('guestName').value = ""; // clear input
+    .then(res => res.json())
+    .then(response => {
+      if(response.result === "success") {
+        alert("Entry Recorded Successfully!");
+        document.getElementById('guestName').value = "";
+      } else {
+        alert("Error: " + response.message);
+      }
     })
-    .catch(err => console.error("Error:", err));
+    .catch(err => alert("Error: " + err));
 
-    // Reset page after 3 sec
     setTimeout(() => { window.location.reload(); }, 3000);
   };
 </script>
 
 </body>
 </html>
-
