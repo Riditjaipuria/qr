@@ -2,53 +2,121 @@
 <html>
 <head>
   <title>Guest Entry - Capture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    /* General styles */
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4fff4;
-      text-align: center;
-      padding: 20px;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(120deg, #8e44ad, #f39c12, #27ae60);
+      background-size: 600% 600%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      overflow: hidden;
     }
+
+    @keyframes gradientBG {
+      0% {background-position:0% 50%;}
+      50% {background-position:100% 50%;}
+      100% {background-position:0% 50%;}
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Logo style (stylized version) */
+    .logo {
+      font-size: 50px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #f1c40f, #9b59b6, #2ecc71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: bounceLogo 2s infinite;
+    }
+
+    @keyframes bounceLogo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Permission screen */
     .tick {
       font-size: 100px;
-      color: green;
+      color: #2ecc71;
+      margin-bottom: 15px;
     }
+
     .message {
-      font-size: 30px;
-      margin-top: 10px;
-      color: green;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
+
     .time {
       font-size: 22px;
-      margin-top: 10px;
+      margin-bottom: 20px;
     }
+
+    /* Video & canvas */
     #video, #canvas {
-      border: 5px solid #28a745;
+      border: 5px solid #fff;
       border-radius: 15px;
       margin-top: 15px;
     }
+
     #captureBtn {
-      margin-top: 15px;
-      font-size: 20px;
-      padding: 12px;
+      margin-top: 20px;
+      font-size: 24px;
+      padding: 15px;
       border-radius: 50%;
       border: none;
-      background-color: #28a745;
+      background: linear-gradient(90deg, #f39c12, #27ae60);
       color: white;
       cursor: pointer;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #captureBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    }
+
+    /* Hide photo screen initially */
+    #photoScreen {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-<div id="permissionScreen">
+<div class="container" id="permissionScreen">
+  <div class="logo">Jaipuria GN</div>
   <div class="tick">✅</div>
   <div class="message">Permission Granted</div>
   <div class="time" id="timeDisplay"></div>
   <div class="message">Welcome to Founder’s Day</div>
 </div>
 
-<div id="photoScreen" style="display:none;">
+<div class="container" id="photoScreen">
   <h2 style="font-size:26px; font-weight:bold;">Please stand in the middle</h2>
   <video id="video" width="320" height="240" autoplay></video><br>
   <button id="captureBtn">📸</button><br>
@@ -59,9 +127,14 @@
   const scriptURL = "https://script.google.com/macros/s/AKfycbwHInUlsozTq1DcdglAu-2-pkSpTzZiOSWE9M08BnCFLDML4KgzPlKdBPUrBQKY3Lj-/exec";
 
   // Show current time
-  document.getElementById("timeDisplay").innerText = "Time: " + new Date().toLocaleString();
+  const timeEl = document.getElementById("timeDisplay");
+  function updateTime() {
+    timeEl.innerText = "Time: " + new Date().toLocaleString();
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
 
-  // After 3 seconds, show camera
+  // Show photo screen after 3 seconds
   setTimeout(() => {
     document.getElementById("permissionScreen").style.display = "none";
     document.getElementById("photoScreen").style.display = "block";
@@ -71,7 +144,8 @@
   function startCamera() {
     const video = document.getElementById('video');
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => { video.srcObject = stream; });
+      .then((stream) => { video.srcObject = stream; })
+      .catch(err => console.error("Camera Error: ", err));
   }
 
   document.getElementById('captureBtn').onclick = () => {
@@ -104,4 +178,3 @@
 
 </body>
 </html>
-
