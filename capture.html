@@ -3,89 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guest Entry - Gate 1</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <title>Permission Granted - Gate 1</title>
   <style>
-    /* Reset & general styles */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Roboto', sans-serif;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f9f9f9; /* light sober background */
-      color: #2c3e50; /* dark text */
-    }
-
-    .container {
-      width: 90%;
-      max-width: 450px;
+      background-color: #f4fff4;
       text-align: center;
-      background-color: #ffffff;
-      border-radius: 15px;
-      padding: 40px 30px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
     }
-    .container:hover { transform: translateY(-5px); }
-
-    /* Logo */
-    .logo {
-      font-size: 42px;
-      font-weight: 700;
-      color: #34495e;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
+    .tick {
+      font-size: 100px;
+      color: green;
+      margin-top: 40px;
     }
-
-    h1 {
+    .message {
       font-size: 28px;
-      margin-bottom: 10px;
+      margin-top: 20px;
+      color: green;
     }
-
-    p {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #7f8c8d;
+    .time {
+      font-size: 20px;
+      margin-top: 10px;
     }
-
-    /* QR code */
-    .qr-section img {
-      width: 300px;
-      height: 300px;
+    #video {
+      border: 5px solid #28a745;
       border-radius: 15px;
-      border: 3px solid #bdc3c7;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 25px;
     }
-    .qr-section img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    #captureBtn {
+      margin-top: 20px;
+      font-size: 20px;
+      padding: 12px;
+      border-radius: 50%;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
     }
-
-    .footer {
-      margin-top: 15px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #34495e;
-    }
-
   </style>
 </head>
-<body>
+<body onload="showTime()">
 
-<div class="container">
-  <div class="logo">Jaipuria</div>
-  <h1>Welcome Guest</h1>
-  <p>Scan this QR Code for entry</p>
+  <!-- ✅ Permission Granted Screen -->
+  <div class="tick">✅</div>
+  <div class="message">Permission Granted</div>
+  <div class="time" id="timeDisplay"></div>
+  <div class="message">Welcome to Founder’s Day</div>
 
-  <div class="qr-section">
-    <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://riditjaipuria.github.io/qr/capture.html&size=300x300" alt="QR Code">
-  </div>
+  <!-- 📸 Camera -->
+  <h2 style="font-size:26px; font-weight:bold; margin-top:30px;">Please stand in the middle</h2>
+  <video id="video" width="320" height="240" autoplay></video><br>
+  <button id="captureBtn">📸</button>
 
-  <div class="footer">Gate 1 - Founder’s Day</div>
-</div>
+<script>
+  function showTime() {
+    const now = new Date();
+    document.getElementById("timeDisplay").innerText = "Time: " + now.toLocaleString();
+  }
+
+  // Start camera
+  const video = document.getElementById('video');
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then((stream) => {
+      video.srcObject = stream;
+    });
+
+  // Capture photo (hidden save for future use)
+  document.getElementById('captureBtn').onclick = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 240;
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Convert to image for backend if needed
+    const photoData = canvas.toDataURL("image/png");
+    console.log("Photo captured:", photoData.substring(0,50) + "...");
+
+    // ✅ We don’t display the photo on screen again
+  };
+
+  // Auto return to QR page after 10 seconds
+  setTimeout(() => {
+    window.location.href = "https://riditjaipuria.github.io/qr/index.html";
+  }, 10000);
+</script>
 
 </body>
 </html>
