@@ -1,42 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Guest Entry - Capture</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* General styles */
+    /* Reset & general styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #f4f4f4; /* sober light gray background */
-      color: #333; /* dark text for readability */
-      overflow: hidden;
+      background-color: #f9f9f9; /* sober light background */
+      color: #2c3e50; /* dark text */
     }
 
     .container {
-      text-align: center;
-      background: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       width: 90%;
       max-width: 450px;
+      text-align: center;
+      background-color: #ffffff;
+      border-radius: 15px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
     }
+    .container:hover { transform: translateY(-5px); }
 
-    /* Logo style */
+    /* Logo */
     .logo {
-      font-size: 40px;
-      font-weight: bold;
+      font-size: 42px;
+      font-weight: 700;
+      color: #34495e; /* deep sober color */
       margin-bottom: 20px;
-      color: #2c3e50; /* deep sober color */
+      letter-spacing: 1px;
     }
 
-    /* Permission screen */
+    /* Permission tick */
     .tick {
       font-size: 80px;
       color: #27ae60; /* green tick */
@@ -44,44 +47,46 @@
     }
 
     .message {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
 
     .time {
       font-size: 18px;
       margin-bottom: 20px;
+      color: #7f8c8d;
     }
 
-    /* Video & canvas */
+    /* Video and canvas */
     #video, #canvas {
-      border: 3px solid #ccc;
+      width: 100%;
+      max-width: 320px;
       border-radius: 10px;
+      border: 2px solid #bdc3c7;
       margin-top: 15px;
     }
 
+    /* Capture button */
     #captureBtn {
       margin-top: 20px;
+      padding: 12px 25px;
       font-size: 20px;
-      padding: 12px 20px;
-      border-radius: 8px;
       border: none;
-      background-color: #27ae60;
-      color: white;
+      border-radius: 10px;
+      background-color: #2980b9; /* sober blue */
+      color: #fff;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.2s ease;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
-
     #captureBtn:hover {
-      background-color: #219150;
+      background-color: #1c5980;
       transform: scale(1.05);
     }
 
     /* Hide photo screen initially */
-    #photoScreen {
-      display: none;
-    }
+    #photoScreen { display: none; }
+
   </style>
 </head>
 <body>
@@ -95,24 +100,22 @@
 </div>
 
 <div class="container" id="photoScreen">
-  <h2 style="font-size:24px; font-weight:bold;">Please stand in the middle</h2>
-  <video id="video" width="320" height="240" autoplay></video><br>
+  <h2 style="font-size:24px; font-weight:700;">Please stand in the middle</h2>
+  <video id="video" autoplay></video><br>
   <button id="captureBtn">📸 Capture</button><br>
-  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+  <canvas id="canvas" style="display:none;"></canvas>
 </div>
 
 <script>
   const scriptURL = "https://script.google.com/macros/s/AKfycbwHInUlsozTq1DcdglAu-2-pkSpTzZiOSWE9M08BnCFLDML4KgzPlKdBPUrBQKY3Lj-/exec";
 
-  // Show current time
+  // Update time every second
   const timeEl = document.getElementById("timeDisplay");
-  function updateTime() {
-    timeEl.innerText = "Time: " + new Date().toLocaleString();
-  }
+  function updateTime() { timeEl.innerText = "Time: " + new Date().toLocaleString(); }
   updateTime();
   setInterval(updateTime, 1000);
 
-  // Show photo screen after 3 seconds
+  // Show photo screen after 3 sec
   setTimeout(() => {
     document.getElementById("permissionScreen").style.display = "none";
     document.getElementById("photoScreen").style.display = "block";
@@ -122,19 +125,21 @@
   function startCamera() {
     const video = document.getElementById('video');
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => { video.srcObject = stream; })
-      .catch(err => console.error("Camera Error: ", err));
+      .then(stream => video.srcObject = stream)
+      .catch(err => console.error("Camera Error:", err));
   }
 
   document.getElementById('captureBtn').onclick = () => {
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0);
 
     const photoData = canvas.toDataURL("image/png");
 
-    // Send data to Google Sheet
+    // Send photo to Google Sheet
     fetch(scriptURL, {
       method: "POST",
       body: JSON.stringify({
@@ -147,10 +152,8 @@
     .then(res => res.text())
     .then(txt => console.log("Server Response:", txt));
 
-    // Reset to Permission Granted page after 10 sec
-    setTimeout(() => {
-      window.location.reload();
-    }, 10000);
+    // Reset after 10 sec
+    setTimeout(() => { window.location.reload(); }, 10000);
   };
 </script>
 
