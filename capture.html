@@ -49,6 +49,16 @@
       margin-top: 10px;
     }
 
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 1em;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 1px solid #fff;
+      color: #000;
+    }
+
     button {
       background: linear-gradient(45deg, #ff6f00, #ab47bc);
       color: white;
@@ -80,6 +90,10 @@
 <body>
   <div class="container">
     <h1>📸 Please Stand in the Middle</h1>
+
+    <!-- Name input -->
+    <input type="text" id="guestName" placeholder="Enter Your Name">
+
     <video id="video" autoplay playsinline></video>
     <canvas id="canvas"></canvas>
     <button id="capture">Click to Capture Photo</button>
@@ -90,7 +104,9 @@
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const captureButton = document.getElementById('capture');
-    const sheetURL = "https://script.google.com/macros/s/AKfycbwHInUlsozTq1DcdglAu-2-pkSpTzZiOSWE9M08BnCFLDML4KgzPlKdBPUrBQKY3Lj-/exec";
+
+    // Google Sheet Web App URL (your deployment)
+    const sheetURL = "https://script.google.com/macros/s/AKfycbw8dWgMIa8XTUNJkBEvRg7lDGcRfa-sB9nTGrIeJ93FHUHD5vcFhM1fsi2PBG9tX8GJ/exec";
 
     // Start webcam
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -98,6 +114,8 @@
       .catch(err => alert("Camera access denied or not available."));
 
     captureButton.addEventListener('click', async () => {
+      const guestName = document.getElementById('guestName').value || "Anonymous";
+
       const context = canvas.getContext('2d');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -114,11 +132,12 @@
           body: new URLSearchParams({
             timestamp: timestamp,
             gate: gate,
+            name: guestName,
             photo: photoData
           })
         });
 
-        alert("✅ Photo captured and saved successfully!");
+        alert("✅ Entry Recorded Successfully!");
         setTimeout(() => {
           window.location.href = "index.html"; // return to QR page
         }, 1000);
@@ -130,3 +149,4 @@
   </script>
 </body>
 </html>
+
