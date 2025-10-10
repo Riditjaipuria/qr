@@ -3,65 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guest Entry - Gate 1</title>
+  <title>Guest Entry - Jaipuria School</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f9f9f9;
       margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ffb347, #9c27b0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: white;
+      overflow: hidden;
     }
-    .container {
-      text-align: center;
-      background-color: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-      max-width: 450px;
-      width: 90%;
-    }
-    .logo {
-      font-size: 42px;
-      font-weight: bold;
-      color: #34495e;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
+
     h1 {
-      font-size: 28px;
-      margin-bottom: 10px;
+      font-size: 2em;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+      animation: fadeIn 2s ease-in-out;
     }
-    p {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #7f8c8d;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .qr-section img {
-      width: 300px;
-      height: 300px;
-      border-radius: 15px;
-      border: 3px solid #bdc3c7;
+
+    .card {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      margin-top: 20px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 400px;
+      animation: pop 1s ease;
     }
-    .footer {
-      margin-top: 15px;
-      font-size: 16px;
+
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .qr {
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    button {
+      background: linear-gradient(45deg, #ff6f00, #ab47bc);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1em;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff9800, #8e24aa);
+    }
+
+    .granted {
+      font-size: 1.5em;
       font-weight: bold;
-      color: #34495e;
+      color: #00e676;
+      display: none;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 0.9em;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo">Jaipuria</div>
-    <h1>Welcome Guest</h1>
-    <p>Scan this QR Code for entry</p>
-    <div class="qr-section">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://riditjaipuria.github.io/qr/capture.html&size=300x300" alt="QR Code">
+  <h1>🎫 Guest Entry - Gate 1</h1>
+
+  <div class="card">
+    <div class="qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://riditjaipuria.github.io/qr/capture.html&size=200x200" alt="Gate QR Code">
     </div>
-    <div class="footer">Gate 1 - Founder’s Day</div>
+    <p>Scan this QR code to proceed</p>
+    <p id="granted" class="granted">✅ Permission Granted</p>
+    <button id="simulate">Simulate Scan (Demo)</button>
   </div>
+
+  <footer>Seth M.R. Jaipuria School, Gomti Nagar</footer>
+
+  <script>
+    const granted = document.getElementById('granted');
+    const button = document.getElementById('simulate');
+
+    // When QR is scanned (demo with button)
+    button.addEventListener('click', () => {
+      granted.style.display = "block";
+      button.style.display = "none";
+
+      setTimeout(() => {
+        window.location.href = "capture.html"; // Redirect to photo capture
+      }, 2000);
+    });
+  </script>
 </body>
 </html>
+
